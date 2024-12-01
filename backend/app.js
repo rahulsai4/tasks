@@ -6,11 +6,15 @@ const app = express();
 // middle ware
 app.use(express.json());
 
-const connectDB = require("./db/connectDB");
+// routes
+const tasksRouter = require("./routes/tasks-router");
+app.use("/api/v1/tasks", tasksRouter);
+
+const client = require("./db/connectDB");
 const start = async () => {
     try {
         const port = process.env.PORT;
-        connectDB();
+        await client.connect();
         console.log("connected to db...");
         app.listen(port, () =>
             console.log(`server is listening on port ${port}...`)
