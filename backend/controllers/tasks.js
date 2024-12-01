@@ -1,7 +1,32 @@
 const client = require("../db/connectDB");
 
 const getAllTasks = async (req, res) => {
-    let result = await client.query("select * from tasks");
+    // pagination
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    // filtering - status, priority
+    const status = req.query.status;
+    const priority = req.query.priority;
+
+    let text = "select * from tasks";
+    let values = [];
+
+    if (status) {
+        text += ` where status = $1`;
+        values.push(status);
+    }
+    if (priority) {
+        text += " order by priority";
+        if (priority === "desc") text += " desc";
+    }
+
+    text += ` limit $${values.length + 1} offset $${values.length + 2};`;
+    values.push(limit);
+    values.push(skip);
+
+    let result = await client.query(text, values);
     res.json({ nBHits: result.rowCount, data: result.rows });
 };
 

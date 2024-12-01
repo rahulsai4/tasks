@@ -10,6 +10,10 @@ app.use(express.json());
 const tasksRouter = require("./routes/tasks-router");
 app.use("/api/v1/tasks", tasksRouter);
 
+// error handler
+const errorHandler = require("./errors/error-handler");
+app.use(errorHandler);
+
 const client = require("./db/connectDB");
 const start = async () => {
     try {
