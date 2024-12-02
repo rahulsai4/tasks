@@ -8,7 +8,10 @@ app.use(express.json());
 
 // routes
 const tasksRouter = require("./routes/tasks-router");
-app.use("/api/v1/tasks", tasksRouter);
+const authRouter = require("./routes/auth-router");
+const authMW = require("./middleware/auth");
+app.use("/api/v1/tasks", authMW, tasksRouter);
+app.use("/api/v1/auth", authRouter);
 
 // error handler
 const errorHandler = require("./errors/error-handler");
