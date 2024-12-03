@@ -65,13 +65,6 @@ const updateTask = async (req, res) => {
     const { title, desc, status, priority } = req.body;
     const id = req.params.id;
 
-    let result = await client.query("select * from tasks where id = " + id);
-    let row = result.rows[0];
-    const userId = req.user.userId;
-    if (row.userid != userId) {
-        return res.status(401).json({ msg: "not authorized." });
-    }
-
     const query = {
         text: "update tasks set title = $1, description = $2, status = $3, priority = $4 where id = $5",
         values: [title, desc, status, priority, id],
@@ -84,13 +77,6 @@ const updateTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
     const id = req.params.id;
-
-    let result = await client.query("select * from tasks where id = " + id);
-    let row = result.rows[0];
-    const userId = req.user.userId;
-    if (row.userid != userId) {
-        return res.status(401).json({ msg: "not authorized." });
-    }
 
     const query = {
         text: "delete from tasks where id = $1",
